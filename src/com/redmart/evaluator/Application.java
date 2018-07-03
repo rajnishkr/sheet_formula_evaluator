@@ -31,6 +31,7 @@ public class Application {
             System.out.println(e.getMessage());
         }catch (Exception e){
             System.out.println("Error Message: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }

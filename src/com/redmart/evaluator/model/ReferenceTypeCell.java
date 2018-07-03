@@ -11,6 +11,11 @@ public class ReferenceTypeCell extends CellType {
     private int refRow;
     private int refCol;
 
+    public ReferenceTypeCell(int refRow, int refCol){
+        this.refCol=refCol;
+        this.refRow=refRow;
+    }
+
     public ReferenceTypeCell(String data) {
         setData(data);
         String regex = "([a-zA-Z]+)(\\d+)";

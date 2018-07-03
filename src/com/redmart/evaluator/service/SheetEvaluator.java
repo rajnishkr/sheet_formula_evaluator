@@ -45,7 +45,8 @@ public class SheetEvaluator {
         for (int row = 0; row < rowLen; row++) {
             for (int col = 0; col < colLen; col++) {
                 if (cells[row][col].isEvaluated()) {
-                    System.out.println(IndexUtility.getRowName(row) + ":" + (col + 1) + " : " + cells[row][col].getEvaluatedValue());
+                    System.out.println(IndexUtility.getRowName(row) + "" + (col + 1) +":"
+                            +"formula=("+cells[row][col].getData()+") : " + String.format("%.3f",cells[row][col].getEvaluatedValue()));
                 } else {
                     System.out.println(IndexUtility.getRowName(row) + ":" + (col + 1) + " : " +"cyclic");
                 }
@@ -68,8 +69,9 @@ public class SheetEvaluator {
     }
 
     private void markResolveDependencies(Cell cell) {
-        if (graph.containsKey(cell)) {
-            HashSet<Cell> dependentCells = graph.get(cell);
+        ReferenceTypeCell typeCell=new ReferenceTypeCell(cell.getRow(),cell.getCol());
+        if (graph.containsKey(typeCell)) {
+            HashSet<Cell> dependentCells = graph.get(typeCell);
             if (dependentCells.size() > 0) {
                 for (Cell depCell : dependentCells) {
                     depCell.setReferencesCount(depCell.getReferencesCount() - 1);
