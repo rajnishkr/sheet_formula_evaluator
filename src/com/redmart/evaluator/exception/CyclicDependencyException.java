@@ -1,4 +1,7 @@
 package com.redmart.evaluator.exception;
 
-public class CyclicDependencyException {
+public class CyclicDependencyException extends Exception {
+    CyclicDependencyException(String message){
+        super(message);
+    }
 }

@@ -1,4 +1,4 @@
-package com.redmart.evaluator.model;
+package com.redmart.evaluator.entity;
 
 public class Sheet {
 
