@@ -62,7 +62,7 @@ public class SheetEvaluator {
             cellToResolved--;
             markResolveDependencies(cell);
         }
-        if (cellToResolved != 0) {
+        if (cellToResolved > 0) {
             cyclicDependency = true;
            // throw new CyclicDependencyException("Cyclic Dependency Found");
         }
@@ -135,7 +135,7 @@ public class SheetEvaluator {
             if (graph.containsKey(refCell)) {
                 ref = graph.get(refCell);
             } else {
-                ref = new HashSet<>();
+                ref = new HashSet<Cell>();
 
             }
             ref.add(cell);
@@ -143,4 +143,11 @@ public class SheetEvaluator {
         }
     }
 
+    public boolean isCyclicDependency() {
+        return cyclicDependency;
+    }
+
+    public SheetDao getSheetDao() {
+        return sheetDao;
+    }
 }

@@ -26,8 +26,8 @@ public class Cell {
         this.col = col;
         this.data = data;
         this.referencesCount = 0;
-        this.celldata = new LinkedList<>();
-        this.referenceTypeCells = new LinkedList<>();
+        this.celldata = new LinkedList<CellType>();
+        this.referenceTypeCells = new LinkedList<ReferenceTypeCell>();
         init();
     }
 

@@ -19,13 +19,16 @@ public class Application {
         col = sc.nextInt();
         row = sc.nextInt();
         sc.nextLine();
-        List<String> inputData = new ArrayList<>();
+        List<String> inputData = new ArrayList<String>();
         for (int itr = 0; itr < row * col; itr++) {
             inputData.add(sc.nextLine());
         }
         try {
             sheetEvaluator = new SheetEvaluator(row, col, inputData);
-        } catch (IllegalArgumentException | ParsingException | InsufficientResourcesException e) {
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        catch (InsufficientResourcesException e){
             System.out.println(e.getMessage());
         } catch (CyclicDependencyException e) {
             System.out.println(e.getMessage());
