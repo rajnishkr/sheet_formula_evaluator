@@ -3,22 +3,26 @@ package com.redmart.evaluator.entity;
 import com.redmart.evaluator.builder.CellTypeParser;
 import com.redmart.evaluator.exception.ParsingException;
 import com.redmart.evaluator.model.CellType;
+import com.redmart.evaluator.model.OperatorTypeCell;
 import com.redmart.evaluator.model.ReferenceTypeCell;
 import com.redmart.evaluator.service.IndexUtility;
 
 import java.util.LinkedList;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 public class Cell {
 
     private int row;
     private int col;
-    private LinkedList<ReferenceTypeCell> referenceTypeCells;
-    private LinkedList<CellType> celldata;
+    private LinkedList<ReferenceTypeCell> referencedCells;
+    private LinkedList<CellType> cellData;
     private String data;
     private int referencesCount;
     private boolean isEvaluated;
     private double evaluatedValue;
+    private boolean invalidData;
+    private CellTypeParser cellTypeParser;
 
     public Cell(int row, int col, String data) {
 
@@ -26,23 +30,52 @@ public class Cell {
         this.col = col;
         this.data = data;
         this.referencesCount = 0;
-        this.celldata = new LinkedList<CellType>();
-        this.referenceTypeCells = new LinkedList<ReferenceTypeCell>();
+        this.cellData = new LinkedList<CellType>();
+        this.referencedCells = new LinkedList<ReferenceTypeCell>();
+        this.cellTypeParser = new CellTypeParser();
         init();
     }
 
     private void init() throws ParsingException {
+
         Pattern splitRegex = Pattern.compile("\\s+");
         String[] input = splitRegex.split(data);
-        CellTypeParser cellTypeParser = new CellTypeParser();
+        if (!validExpression(input)) {
+            // this.setReferencesCount(Integer.MAX_VALUE);
+            setInvalidData(true);
+            return;
+        }
         for (String part : input) {
             CellType cellType = cellTypeParser.parseData(part);
             if (cellType.getClass().equals(ReferenceTypeCell.class)) {
-                referenceTypeCells.add((ReferenceTypeCell) cellType);
+                referencedCells.add((ReferenceTypeCell) cellType);
                 referencesCount++;
             }
-            celldata.add(cellType);
+            cellData.add(cellType);
         }
+    }
+
+    private boolean validExpression(String[] input) {
+        if (input.length == 0) {
+            return true;
+        }
+        Stack<CellType> cellTypeStack = new Stack<CellType>();
+        cellTypeStack.push(cellTypeParser.parseData(input[0]));
+        for (int itr = 1; itr < input.length; itr++) {
+            CellType cellType = cellTypeParser.parseData(input[itr]);
+            if (cellType.getClass().equals(OperatorTypeCell.class)) {
+                if (cellTypeStack.size() < 2) {
+                    return false;
+                } else {
+                    cellTypeStack.pop();
+                }
+            } else {
+                cellTypeStack.push(cellType);
+            }
+        }
+
+
+        return cellTypeStack.size() == 1;
     }
 
     public int getRow() {
@@ -61,20 +94,20 @@ public class Cell {
         this.col = col;
     }
 
-    public LinkedList<ReferenceTypeCell> getReferenceTypeCells() {
-        return referenceTypeCells;
+    public LinkedList<ReferenceTypeCell> getReferencedCells() {
+        return referencedCells;
     }
 
-    public void setReferenceTypeCells(LinkedList<ReferenceTypeCell> referenceTypeCells) {
-        this.referenceTypeCells = referenceTypeCells;
+    public void setReferencedCells(LinkedList<ReferenceTypeCell> referencedCells) {
+        this.referencedCells = referencedCells;
     }
 
-    public LinkedList<CellType> getCelldata() {
-        return celldata;
+    public LinkedList<CellType> getCellData() {
+        return cellData;
     }
 
-    public void setCelldata(LinkedList<CellType> celldata) {
-        this.celldata = celldata;
+    public void setCellData(LinkedList<CellType> cellData) {
+        this.cellData = cellData;
     }
 
     public String getData() {
@@ -126,14 +159,21 @@ public class Cell {
 
         Cell cell = (Cell) o;
 
-        if (row != cell.row) return false;
-        return col == cell.col;
+        return row == cell.row && col == cell.col;
     }
 
     @Override
     public int hashCode() {
-        int result = row+1;
+        int result = row + 1;
         result = 31 * result + col + 1;
         return result;
+    }
+
+    public boolean isInvalidData() {
+        return invalidData;
+    }
+
+    public void setInvalidData(boolean invalidData) {
+        this.invalidData = invalidData;
     }
 }

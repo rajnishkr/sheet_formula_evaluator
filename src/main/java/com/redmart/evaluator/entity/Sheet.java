@@ -2,9 +2,9 @@ package com.redmart.evaluator.entity;
 
 public class Sheet {
 
-    private Cell[][] cells;
-    private int row;
-    private int col;
+    private final Cell[][] cells;
+    private final int row;
+    private final int col;
 
     public Sheet(int row, int col) {
         this.row = row;

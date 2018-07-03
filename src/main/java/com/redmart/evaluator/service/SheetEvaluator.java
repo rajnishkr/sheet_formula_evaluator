@@ -15,11 +15,10 @@ import java.util.*;
 public class SheetEvaluator {
 
     private final SheetDao sheetDao;
-    private final LinkedList<Cell> topologicalSortArray;
     private final OperatorUtility operatorUtility;
+    private final LinkedList<Cell> topologicalSortArray;
     private final HashMap<ReferenceTypeCell, HashSet<Cell>> graph;
     private boolean cyclicDependency;
-    private List<String> dataList;
     private int cellToResolved;
 
     public SheetEvaluator(int n, int m, List<String> dataList) throws InsufficientResourcesException, CyclicDependencyException, ParsingException {
@@ -27,12 +26,11 @@ public class SheetEvaluator {
         topologicalSortArray = new LinkedList<Cell>();
         graph = new HashMap<ReferenceTypeCell, HashSet<Cell>>();
         cyclicDependency = false;
-        this.dataList = dataList;
         if (dataList.size() < (n * m)) {
             throw new InsufficientResourcesException();
         }
         operatorUtility = new OperatorUtility();
-        this.init();
+        this.init(dataList);
         this.evaluate();
         this.display();
 
@@ -45,31 +43,38 @@ public class SheetEvaluator {
         for (int row = 0; row < rowLen; row++) {
             for (int col = 0; col < colLen; col++) {
                 if (cells[row][col].isEvaluated()) {
-                    System.out.println(IndexUtility.getRowName(row) + "" + (col + 1) +":"
-                            +"formula=("+cells[row][col].getData()+") : " + String.format("%.3f",cells[row][col].getEvaluatedValue()));
+                    System.out.println(IndexUtility.getRowName(row) + "" + (col + 1) + ":"
+                            + "formula=(" + cells[row][col].getData() + ") : " + String.format("%.3f", cells[row][col].getEvaluatedValue()));
+                } else if (cells[row][col].isInvalidData()) {
+                    System.out.println(IndexUtility.getRowName(row) + "" + (col + 1) + ":"
+                            + "formula=(" + cells[row][col].getData() + ") : " + "Invalid Expression");
                 } else {
-                    System.out.println(IndexUtility.getRowName(row) + ":" + (col + 1) + " : " +"cyclic");
+                    System.out.println(IndexUtility.getRowName(row) + "" + (col + 1) + ":"
+                            + "formula=(" + cells[row][col].getData() + ") : " + "cyclic or depends upon cell with invalid Expression");
                 }
             }
 
         }
     }
 
-    public void evaluate() throws CyclicDependencyException, ParsingException {
+    private void evaluate() throws CyclicDependencyException, ParsingException {
         while (topologicalSortArray.size() > 0) {
             Cell cell = topologicalSortArray.removeFirst();
+            if (cell.isInvalidData()) {
+                continue;
+            }
             evaluate(cell);
             cellToResolved--;
             markResolveDependencies(cell);
         }
         if (cellToResolved > 0) {
             cyclicDependency = true;
-           // throw new CyclicDependencyException("Cyclic Dependency Found");
+            // throw new CyclicDependencyException("Cyclic Dependency Found");
         }
     }
 
     private void markResolveDependencies(Cell cell) {
-        ReferenceTypeCell typeCell=new ReferenceTypeCell(cell.getRow(),cell.getCol());
+        ReferenceTypeCell typeCell = new ReferenceTypeCell(cell.getRow(), cell.getCol());
         if (graph.containsKey(typeCell)) {
             HashSet<Cell> dependentCells = graph.get(typeCell);
             if (dependentCells.size() > 0) {
@@ -87,7 +92,7 @@ public class SheetEvaluator {
             return cell.getEvaluatedValue();
 
         Stack<Double> stack = new Stack<Double>();
-        LinkedList<CellType> cellInfoList = cell.getCelldata();
+        LinkedList<CellType> cellInfoList = cell.getCellData();
 
         for (CellType cellType : cellInfoList) {
             if (cellType.getClass().equals(ValueTypeCell.class)) {
@@ -108,7 +113,7 @@ public class SheetEvaluator {
         return cell.getEvaluatedValue();
     }
 
-    private void init() {
+    private void init(List<String> dataList) {
         Cell cells[][] = sheetDao.getSheet().getCells();
         int rowLen = cells.length;
         int colLen = cells[0].length;
@@ -128,7 +133,7 @@ public class SheetEvaluator {
     }
 
     private void addToGraph(Cell cell) {
-        LinkedList<ReferenceTypeCell> dependentNodes = cell.getReferenceTypeCells();
+        LinkedList<ReferenceTypeCell> dependentNodes = cell.getReferencedCells();
 
         for (ReferenceTypeCell refCell : dependentNodes) {
             HashSet<Cell> ref;

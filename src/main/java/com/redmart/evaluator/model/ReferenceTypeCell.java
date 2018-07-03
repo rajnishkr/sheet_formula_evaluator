@@ -11,9 +11,9 @@ public class ReferenceTypeCell extends CellType {
     private int refRow;
     private int refCol;
 
-    public ReferenceTypeCell(int refRow, int refCol){
-        this.refCol=refCol;
-        this.refRow=refRow;
+    public ReferenceTypeCell(int refRow, int refCol) {
+        this.refCol = refCol;
+        this.refRow = refRow;
     }
 
     public ReferenceTypeCell(String data) {
@@ -45,14 +45,13 @@ public class ReferenceTypeCell extends CellType {
 
         ReferenceTypeCell that = (ReferenceTypeCell) o;
 
-        if (refRow != that.refRow) return false;
-        return refCol == that.refCol;
+        return refRow == that.refRow && refCol == that.refCol;
     }
 
     @Override
     public int hashCode() {
-        int result = refRow+1;
-        result = 31 * result + refCol+1;
+        int result = refRow + 1;
+        result = 31 * result + refCol + 1;
         return result;
     }
 

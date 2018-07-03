@@ -1,7 +1,6 @@
 package com.redmart.evaluator;
 
 import com.redmart.evaluator.exception.CyclicDependencyException;
-import com.redmart.evaluator.exception.ParsingException;
 import com.redmart.evaluator.service.SheetEvaluator;
 
 import javax.naming.InsufficientResourcesException;
@@ -25,14 +24,16 @@ public class Application {
         }
         try {
             sheetEvaluator = new SheetEvaluator(row, col, inputData);
+            if (sheetEvaluator.isCyclicDependency()) {
+                System.out.println("Cycle Found");
+            }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-        }
-        catch (InsufficientResourcesException e){
+        } catch (InsufficientResourcesException e) {
             System.out.println(e.getMessage());
         } catch (CyclicDependencyException e) {
             System.out.println(e.getMessage());
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error Message: " + e.getMessage());
             e.printStackTrace();
         }

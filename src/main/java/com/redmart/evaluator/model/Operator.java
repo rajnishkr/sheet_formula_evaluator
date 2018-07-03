@@ -11,12 +11,14 @@ public enum Operator {
         for (Operator op : Operator.values())
             map.put(op.getOperator(), op);
     }
+
     private final String value;
+
     Operator(String operator) {
         value = operator;
     }
 
-    public static Operator getOperatorObject(String operator){
+    public static Operator getOperatorObject(String operator) {
         return map.get(operator);
     }
 

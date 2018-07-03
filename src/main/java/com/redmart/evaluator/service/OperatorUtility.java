@@ -4,7 +4,7 @@ import com.redmart.evaluator.model.Operator;
 
 import java.util.Stack;
 
-public class OperatorUtility {
+class OperatorUtility {
 
 
     public void evaluate(Operator operator, Stack<Double> stack) throws IllegalArgumentException {
@@ -31,6 +31,5 @@ public class OperatorUtility {
                 stack.push(first / second);
                 break;
         }
-        return;
     }
 }

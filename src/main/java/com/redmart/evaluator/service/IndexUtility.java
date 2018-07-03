@@ -7,16 +7,17 @@ public class IndexUtility {
         for (int i = 0; i < row.length(); i++) {
             index = index * 26 + row.charAt(i) - 'A' + 1;
         }
-        return (--index);
+        return index - 1;
     }
 
     public static int getColIndex(String col) {
+
         return Integer.valueOf(col) - 1;
     }
 
     public static String getRowName(int row) {
-        int num = row % 26;
-        String ch = String.valueOf((char) ('A' + num));
+        int val = row % 26;
+        String ch = String.valueOf((char) ('A' + val));
         row = (row) / 26;
         if (row > 0)
             return getRowName(row - 1) + ch;
