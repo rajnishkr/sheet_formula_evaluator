@@ -9,14 +9,14 @@ public class ValueTypeCell extends CellType {
         setData(data);
     }
 
-    public double getValue() {
-        return Double.parseDouble(getData());
-    }
-
     public static boolean isValid(String data) {
         String regex = "[+-]?\\d+";
         Pattern regexPattern = Pattern.compile(regex);
         Matcher matcher = regexPattern.matcher(data);
         return matcher.matches();
+    }
+
+    public double getValue() {
+        return Double.parseDouble(getData());
     }
 }

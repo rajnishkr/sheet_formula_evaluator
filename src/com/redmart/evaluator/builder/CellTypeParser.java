@@ -7,13 +7,13 @@ public class CellTypeParser {
 
     public CellType parseData(String data) throws ParsingException {
         if (OperatorTypeCell.isValid(data))
-            return new OperatorTypeCell(Operator.valueOf(data));
+            return new OperatorTypeCell(Operator.getOperatorObject(data));
         else if (ReferenceTypeCell.isValid(data))
             return new ReferenceTypeCell(data);
         else if (ValueTypeCell.isValid(data))
             return new ValueTypeCell(data);
         else
-            throw new ParsingException("Invalid data: "+ data,400);
+            throw new ParsingException("Invalid data: " + data, 400);
     }
 
 }

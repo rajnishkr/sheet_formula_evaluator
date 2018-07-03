@@ -4,8 +4,8 @@ public class ParsingException extends RuntimeException {
 
     private int code;
 
-    public ParsingException(String message,int code){
+    public ParsingException(String message, int code) {
         super(message);
-        this.code=code;
+        this.code = code;
     }
 }

@@ -6,11 +6,11 @@ public class OperatorTypeCell extends CellType {
         setData(operator.getOperator());
     }
 
-    public Operator getValue() {
-        return Operator.valueOf(getData());
-    }
-
     public static boolean isValid(String data) {
         return Operator.isValidOperator(data);
+    }
+
+    public Operator getValue() {
+        return Operator.getOperatorObject(getData());
     }
 }

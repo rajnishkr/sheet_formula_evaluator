@@ -4,22 +4,23 @@ import com.redmart.evaluator.builder.CellTypeParser;
 import com.redmart.evaluator.exception.ParsingException;
 import com.redmart.evaluator.model.CellType;
 import com.redmart.evaluator.model.ReferenceTypeCell;
+import com.redmart.evaluator.service.IndexUtility;
 
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 public class Cell {
 
-    private  int row;
-    private  int col;
+    private int row;
+    private int col;
     private LinkedList<ReferenceTypeCell> referenceTypeCells;
     private LinkedList<CellType> celldata;
-    private  String data;
+    private String data;
     private int referencesCount;
     private boolean isEvaluated;
     private double evaluatedValue;
 
-    public Cell(int row, int col, String data){
+    public Cell(int row, int col, String data) {
 
         this.row = row;
         this.col = col;
@@ -106,5 +107,33 @@ public class Cell {
 
     public void setEvaluatedValue(double evaluatedValue) {
         this.evaluatedValue = evaluatedValue;
+    }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "row=" + IndexUtility.getRowName(row) +
+                ", col=" + col +
+                ", data='" + data + '\'' +
+                ", evaluatedValue=" + evaluatedValue +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cell)) return false;
+
+        Cell cell = (Cell) o;
+
+        if (row != cell.row) return false;
+        return col == cell.col;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = row+1;
+        result = 31 * result + col + 1;
+        return result;
     }
 }

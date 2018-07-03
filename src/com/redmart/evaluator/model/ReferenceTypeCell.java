@@ -1,5 +1,6 @@
 package com.redmart.evaluator.model;
 
+import com.redmart.evaluator.exception.ParsingException;
 import com.redmart.evaluator.service.IndexUtility;
 
 import java.util.regex.Matcher;
@@ -19,7 +20,7 @@ public class ReferenceTypeCell extends CellType {
             refRow = IndexUtility.getRowIndex(matcher.group(1));
             refCol = IndexUtility.getColIndex(matcher.group(2));
         } else {
-            throw new RuntimeException("Unable to parse reference: " + data);
+            throw new ParsingException("Unable to parse reference: " + data, 400);
         }
 
     }
@@ -27,8 +28,34 @@ public class ReferenceTypeCell extends CellType {
 
     public static boolean isValid(String data) {
         String regex = "([a-zA-Z]+)(\\d+)";
-            Pattern regexPattern = Pattern.compile(regex);
-            Matcher matcher = regexPattern.matcher(data);
-            return matcher.matches();
+        Pattern regexPattern = Pattern.compile(regex);
+        Matcher matcher = regexPattern.matcher(data);
+        return matcher.matches();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReferenceTypeCell)) return false;
+
+        ReferenceTypeCell that = (ReferenceTypeCell) o;
+
+        if (refRow != that.refRow) return false;
+        return refCol == that.refCol;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = refRow+1;
+        result = 31 * result + refCol+1;
+        return result;
+    }
+
+    public int getRefRow() {
+        return refRow;
+    }
+
+    public int getRefCol() {
+        return refCol;
     }
 }
